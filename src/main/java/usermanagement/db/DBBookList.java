@@ -3,7 +3,7 @@ package usermanagement.db;
 
 
 import usermanagement.BookList;
-import usermanagement.UserManagementServlet;
+
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -18,10 +18,9 @@ public class DBBookList {
         final String PWDDB ="Postgres.2023";
         Connection conn = null;
         try {
-            conn = DriverManager.getConnection(URLDB, USERNAMEDB, PWDDB);
+           conn = DriverManager.getConnection(URLDB, USERNAMEDB, PWDDB);
         } catch (SQLException e) {
             throw new RuntimeException(e);
-        } finally {
         }
         return conn;
     }
@@ -92,7 +91,7 @@ public class DBBookList {
 
         return list;
     }
-    //==================================Search for open========================
+
 
 
 //==============================Delete one by one==============================

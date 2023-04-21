@@ -28,8 +28,8 @@ Hello <b><%=email%></b>
 </p>
 </p>
 
-<input type="text" placeholder="openbook" onkeyup="search(this.value)">
-<input type="button" id="openbook" value="OpenBook" onClick="openBook()">
+<input type="text" id="openbook" placeholder="Open Book" onkeyup="search(this.value)">
+<input type="button" id="openbook" value="Open Book" onClick="openBook()">
 
 </p>
 </p>

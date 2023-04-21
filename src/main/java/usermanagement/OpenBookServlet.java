@@ -27,7 +27,7 @@ public class OpenBookServlet extends HttpServlet {
         if(id!=null && author!=""){
             BookList mbl=new BookList(author,title,iduser);
             GeneratePDF gPdf=new GeneratePDF();
-            gPdf.openPDF(mbl.getAuthorname());
+            gPdf.openPDF(author);
 
         }
         else
