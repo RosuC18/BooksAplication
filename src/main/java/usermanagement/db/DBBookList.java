@@ -3,57 +3,43 @@ package usermanagement.db;
 
 
 import usermanagement.BookList;
-
-
+import usermanagement.GeneratePDF;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import static usermanagement.db.PostgresConn.LoadConn;
 
 public class DBBookList {
 
-    protected static Connection LoadConn()
-    {
-        final String URLDB = "jdbc:postgresql://localhost:5432/grupajava";
-        final String USERNAMEDB ="postgres";
-        final String PWDDB ="Postgres.2023";
-        Connection conn = null;
-        try {
-           conn = DriverManager.getConnection(URLDB, USERNAMEDB, PWDDB);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return conn;
-    }
-
+    //=================================New Book=========================================
     public boolean newBook(BookList u) {
 
         System.out.println(u);
-
+        int update=-1;
         boolean isInserted=false;
+        PreparedStatement pst=null;
         try {
+
             PreparedStatement pSt = LoadConn().prepareStatement("INSERT INTO books (author,title,id_user) VALUES(?,?,?)");
             pSt.setString(1,u.getAuthorname());
 
            pSt.setString(2, u.getTitlename());
 
            pSt.setLong(3, u.getId_user());
-
-            int insert = pSt.executeUpdate();
-            if(insert!=-1)
-                isInserted=true;
-            System.out.println(isInserted);
-
-            pSt.close();
+           pSt.executeUpdate();
+            GeneratePDF gPdf = new GeneratePDF();
+            gPdf.createPDF(u.getAuthorname());
             pSt.close();
         } catch (SQLException e) {
             e.printStackTrace();
             isInserted=false;
 
         }
-
-
         return isInserted;
+
     }
+
+
 //======================================== List&Search=====================================
     public List<BookList> getBookList (int idUser, String search) {
 
@@ -92,7 +78,30 @@ public class DBBookList {
         return list;
     }
 
+//==============================Open book by author===============================
+    public void open(BookList opnB){
+        System.out.println("met open");
+        try {
+            PreparedStatement pSt = LoadConn().prepareStatement("select * from books where author=? or title=? and id_user=?");
+           pSt.setString(1, opnB.getAuthorname());
+           pSt.setString(2,opnB.getTitlename());
+            pSt.setLong(3, opnB.getId_user());
+           ResultSet rs =pSt.executeQuery();
+            System.out.println("opendb1");
+            while(rs.next()) {
+                String authorname = rs.getString("author");
+                GeneratePDF gPdf = new GeneratePDF();
+                gPdf.openPDF(authorname.trim());
 
+                System.out.println("opendb2");
+            }
+            pSt.close();
+
+        } catch (SQLException  e) {
+            throw new RuntimeException(e);
+        }
+
+    }
 
 //==============================Delete one by one==============================
 public void delete(BookList delB)  {
@@ -110,7 +119,6 @@ public void delete(BookList delB)  {
         pSt.close();
     } catch (SQLException  e) {
         throw new RuntimeException(e);
-    } finally {
     }
 }
     //==============================Delete all==============================
@@ -129,28 +137,6 @@ public void delete(BookList delB)  {
             pSt.close();
         } catch (SQLException  e) {
             throw new RuntimeException(e);
-        } finally {
         }
-    }
-
-
-
-    public static void main(String[] args) {
-
-        DBBookList db = new DBBookList();
-
-
-        List<BookList> l = db.getBookList(5,"");
-
-        for(int i = 0;i<l.size();i++) {
-
-            BookList mbl = (BookList) l.get(i);
-
-            System.out.println(mbl.toString()); // just to test we get the right data from db
-        }
-
-
-
-
     }
 }

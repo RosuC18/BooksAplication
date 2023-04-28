@@ -34,7 +34,7 @@ Hello <b><%=email%></b>
 </p>
 </p>
 
-<input type="text"  id="delBook" placeholder="Delete book">
+<input type="text"  id="delBook" placeholder="Delete book by author">
 <input type="button" id="delete" value="Delete Book" onClick="deleteBook()">
 <input type="button" id="deleteAll" value="Delete All Book" onClick="deleteAll()">
 </p>

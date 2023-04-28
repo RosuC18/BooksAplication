@@ -5,7 +5,6 @@ public class BookList {
     private String titlename;
     private String authorname;
     long id_user;
-   long id_books;
 
     public BookList( String authorname, String titlename,long id_user) {
         this.titlename = titlename;
@@ -37,13 +36,6 @@ public class BookList {
         this.id_user = id_user;
     }
 
-    public long getId_books() {
-        return id_books;
-    }
-
-    public void setId_books(long id_books) {
-        this.id_books = id_books;
-    }
 
     public BookList() {
     }

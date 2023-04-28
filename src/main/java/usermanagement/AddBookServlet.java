@@ -17,22 +17,19 @@ public class AddBookServlet extends HttpServlet {
     protected void service(HttpServletRequest req, HttpServletResponse resp) {
 
         HttpSession s = req.getSession();
-        Object o = s.getAttribute("id"); // daca pe sesiune exista obiectul numit id sau nu exista voi lua diferite decizii
+        Object o = s.getAttribute("id");
         String authorname = req.getParameter("author");
         String titlename = req.getParameter("title");
         if(o!=null && (authorname!=null||titlename!=null))
         {
-
-           // LocalDate ld  = LocalDate.now();
             long id_user = (int)o;
-
             BookList mbl = new BookList(authorname,titlename, id_user);
             DBBookList db=new DBBookList();
             db.newBook(mbl);
         }
         else
         {
-            error(resp, "operation forbidden. user is not logged in or foodname is not arriving to server");
+            error(resp, "Operation forbidden. User is not logged in or authorname or title are not inserted");
         }
     }
 

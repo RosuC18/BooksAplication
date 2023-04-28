@@ -25,11 +25,11 @@ public class UserManagementServlet extends HttpServlet {
     protected void service(HttpServletRequest req, HttpServletResponse resp) {
         String action = req.getParameter("action"); // name as in the html form
         System.out.println("action is:" + action);
-        boolean succes = false;
+        boolean newUser = false;
         if (action != null && action.equalsIgnoreCase("NEW")) {
 
-            succes= newUser(req, resp);
-            if(succes)
+            newUser= newUser(req, resp);
+            if(newUser)
             {
                 RequestDispatcher rd=req.getRequestDispatcher("login.html");
                 try {
@@ -48,8 +48,8 @@ public class UserManagementServlet extends HttpServlet {
 
         } else if (action != null && action.equalsIgnoreCase("LOGIN")) {
             //afisare
-            succes = loginUser(req, resp);
-            if(succes)
+            newUser = loginUser(req, resp);
+            if(newUser)
             {
                 RequestDispatcher rd=req.getRequestDispatcher("listMyStuff.jsp");
                 try {
@@ -62,41 +62,22 @@ public class UserManagementServlet extends HttpServlet {
             }
             else
             {
-                RequestDispatcher rd=req.getRequestDispatcher("login.html");
-                try {
-                    rd.forward(req, resp);
-                } catch (ServletException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                error(resp, "Email or password incorect");
             }
-        }
-        else if (action != null && action.equalsIgnoreCase("OUT")) {
-            HttpSession s = req.getSession();
-            s.invalidate();
-            try {
-                resp.sendRedirect("login.html");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-         else {
-            System.out.println("action didn`t come ");
-            error(resp, "error on ui side");
         }
 
     }
 
     private boolean newUser(HttpServletRequest req, HttpServletResponse resp) {
 
-
+        DBUser dbUser = new DBUser();
+        boolean chkemail=false;
+        boolean inserted=false;
         String email = req.getParameter("email");
         String pwd = req.getParameter("pwd");
         String confirmPwd = req.getParameter("confirmPwd");
         String accepthtml = req.getParameter("accept");
-        String offerhtml= req.getParameter("offer");
+
 
         System.out.println(pwd+confirmPwd);
         // validari
@@ -110,21 +91,28 @@ public class UserManagementServlet extends HttpServlet {
             error(resp, "You must accept terms and conditions");
             return false;
         }
-
-
+        chkemail= dbUser.checkEmail(email);
+        if(!chkemail){
+            inserted=true;
+        }
+        else {
+            error(resp, "Email already in use");
+            return false;
+        }
+        boolean chkpwd=false;
+        chkpwd=checkPwd(req, resp);
+        if(chkpwd){
+            inserted=true;
+        }
+        else{
+            return false;
+        }
 
         boolean accept=false;
-        boolean offer=false;
          if (accepthtml != null && accepthtml.equalsIgnoreCase("YES"))
              accept=true;
-        if (offerhtml != null && offerhtml.equalsIgnoreCase("YES"))
-            offer=true;
-
-        DBUser dbUser = new DBUser();
-        User u = new User(email,pwd,confirmPwd, accept, offer);
-        boolean inserted = dbUser.newUser(u);
-
-
+        User u = new User(email,pwd,confirmPwd, accept);
+         inserted = dbUser.newUser(u);
         return inserted;
 
     }
@@ -160,17 +148,56 @@ public class UserManagementServlet extends HttpServlet {
         }
     }
 
-//    private void returnJsonResponse(HttpServletResponse response, String jsonResponse) {
-//        response.setContentType("application/json");
-//        PrintWriter pr = null;
-//        try {
-//            pr = response.getWriter();
-//        } catch (IOException e) {
-//            e.printStackTrace();
+//================================Check Complexity Password=============================
+public boolean checkPwd(HttpServletRequest req,HttpServletResponse resp){
+    boolean chkPwd=false;
+    int passwordLength=8, upChars=0, lowChars=0;
+    int special=0, digits=0;
+    char ch;
+    String pwd = req.getParameter("pwd");
+    int total = pwd.length();
+
+        for(int i=0; i<total; i++)
+        {
+            ch = pwd.charAt(i);
+            if(Character.isUpperCase(ch))
+                upChars++;
+            else if(Character.isLowerCase(ch))
+                lowChars++;
+            else if(Character.isDigit(ch))
+                digits++;
+            else
+                special++;
+        }
+
+    if(total >=8 && upChars!=0 && lowChars!=0 && digits!=0 && special!=0)
+    {
+           chkPwd=true;
+
+//        else
+//        {
+//            System.out.println("\nThe Strength of Password is Medium.");
 //        }
-//        assert pr != null;
-//        pr.write(jsonResponse);
-//        pr.close();
-//    }
+//        System.out.println("\n----The Password Contains----");
+//        System.out.println("UpperCase Character: " +upChars);
+//        System.out.println("LowerCase Character: " +lowChars);
+//        System.out.println("Digit: " +digits);
+//        System.out.println("Special Character: " +special);
+    }
+    else
+    {
+        if(total<passwordLength)
+            error(resp,"\nThe Password's Length has to be of 8 characters or more.");
+        if(upChars==0)
+            error(resp,"\nThe Password must contain at least one uppercase character.");
+        if(lowChars==0)
+            error(resp,"\nThe Password must contain at least one lowercase character.");
+        if(digits==0)
+            error(resp,"\nThe Password must contain at least one digit.");
+        if(special==0)
+            error(resp,"\nThe Password must contain at least one special character.");
+    }
+    return chkPwd;
+}
 
 }

@@ -26,14 +26,19 @@ public class OpenBookServlet extends HttpServlet {
 
         if(id!=null && author!=""){
             BookList mbl=new BookList(author,title,iduser);
-            GeneratePDF gPdf=new GeneratePDF();
-            gPdf.openPDF(author);
+            DBBookList db = new DBBookList();
+            System.out.println("test");
+           db.open(mbl);
+//            GeneratePDF gPdf=new GeneratePDF();
+//            gPdf.openPDF(mbl.getAuthorname());
+            System.out.println("test");
 
         }
         else
         {
             error(resp, "operation forbidden. user is not logged in.");
         }
+
     }
     private void returnJsonResponse(HttpServletResponse response, String jsonResponse) {
         response.setContentType("application/json");

@@ -5,15 +5,15 @@ public class User {
     private String pwd;
     private String confirmPwd;
     private boolean accept;
-    private boolean offers;
+
     private int id;
 
-    public User(String email, String pwd, String confirmPwd, boolean accept, boolean offers) {
+    public User(String email, String pwd, String confirmPwd, boolean accept) {
         this.email = email;
         this.pwd = pwd;
         this.confirmPwd = confirmPwd;
         this.accept = accept;
-        this.offers = offers;
+
     }
 
     public User() {
@@ -51,13 +51,6 @@ public class User {
         this.accept = accept;
     }
 
-    public boolean isOffers() {
-        return offers;
-    }
-
-    public void setOffers(boolean offers) {
-        this.offers = offers;
-    }
 
     public int getId() {
         return id;
@@ -74,7 +67,6 @@ public class User {
                 ", pwd='" + pwd + '\'' +
                 ", confirmPwd='" + confirmPwd + '\'' +
                 ", accept=" + accept +
-                ", offers=" + offers +
                 ", id=" + id +
                 '}';
     }

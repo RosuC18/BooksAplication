@@ -4,43 +4,29 @@ import usermanagement.User;
 
 import java.sql.*;
 
+import static usermanagement.db.PostgresConn.LoadConn;
+
 public class DBUser {
 
+    //============================================New User==========================================================
     public boolean newUser(User u) {
 
         System.out.println(u);
 
         boolean isInserted=false;
         try {
-            // 1. ma conectez la db
-            final String URL = "jdbc:postgresql://localhost:5432/grupajava";
-            final String USERNAME = "postgres";
 
-            final String PASSWORD = "Postgres.2023";
-
-            System.out.println("parola:"+PASSWORD);
-
-            Class.forName("org.postgresql.Driver");
-
-            Connection conn = DriverManager.getConnection(URL, USERNAME, PASSWORD);
-
-            // 2. creez un prepared ststement si il populez cu date
-            PreparedStatement pSt = conn.prepareStatement("INSERT INTO users (username, password, offers) VALUES(?,?,?)");
+            PreparedStatement pSt = LoadConn().prepareStatement("INSERT INTO users (email, password) VALUES(?,?)");
             pSt.setString(1,u.getEmail());
             pSt.setString(2,u.getPwd());
-            pSt.setBoolean(3,u.isOffers());
 
-
-
-            // 3. executie
             int insert = pSt.executeUpdate();
             if(insert!=-1)
                 isInserted=true;
             System.out.println(isInserted);
 
             pSt.close();
-            conn.close();
-        } catch (SQLException | ClassNotFoundException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
             isInserted=false;
 
@@ -49,64 +35,54 @@ public class DBUser {
 
         return isInserted;
     }
-
+//=========================================Login User================================================================
     public User login (String username, String password) {
 
         User u = null;
-        // 1. ma conectez la db
-        final String URL = "jdbc:postgresql://localhost:5432/grupajava";
-        final String USERNAME = "postgres";
-
-        final String PASSWORD = "Postgres.2023";
-        int id =-1;
         try {
-            Class.forName("org.postgresql.Driver");
-            Connection conn = DriverManager.getConnection(URL, USERNAME, PASSWORD);
-
-            // 2. fac un query pe o tabela , intai creez obiectul
-
-
-
-            PreparedStatement pSt = conn.prepareStatement("select id, username from users where username=? and password=?");
+            PreparedStatement pSt = LoadConn().prepareStatement("select id, email from users where email=? and password=?");
 
             pSt.setString(1,username);
             pSt.setString(2,password);
 
-
             // 3. executie
             ResultSet rs = pSt.executeQuery();
-
-
-
 
             // atata timp cat am randuri
             while (rs.next()) {
 
                 u = new User();
                 u.setId(rs.getInt("id"));
-                u.setEmail(rs.getString("username"));
-
-
-
+                u.setEmail(rs.getString("email"));
             }
-
             rs.close();
             pSt.close();
-            conn.close();
-
-
-        } catch (SQLException | ClassNotFoundException e) {
+        } catch (SQLException  e) {
             e.printStackTrace();
         }
 
 
         return u;
     }
+    //===========================================Check Email====================================================
+    public boolean checkEmail(String ReqEmail){
+        String ResEmail=null;
+        boolean chkOk=false;
+        try {
+            PreparedStatement pSt1=LoadConn().prepareStatement("select email from users ");
+            ResultSet rs = pSt1.executeQuery();
+            while (rs.next()) {
+                ResEmail=rs.getString("email").trim();
+                if (ReqEmail.equalsIgnoreCase(ResEmail) || ReqEmail==null){
+                    chkOk=true;
+                    break;
+                }
 
+            }}
+        catch (SQLException e) {
+            e.printStackTrace();}
+        return chkOk;
 
-    public static void main(String[] args) {
-        DBUser dbuser= new DBUser();
-        User u = new User("gfdghdf", "ererw", "wertewrt", true, true);
-        boolean b = dbuser.newUser(u);
     }
+
 }

@@ -18,10 +18,28 @@ public class GeneratePDF {
 
 
         Document doc = new Document();
-      //  Scanner sc=new Scanner(System.in);
 
         PdfWriter writer;
 
+        {
+            try {
+                if (Desktop.isDesktopSupported()) {
+                    File myFile = new File("/PDF_Java/" + fileName +".pdf");
+                    Desktop.getDesktop().open(myFile);
+
+                }
+
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+    public  void createPDF(String fileName) {
+        Document doc = new Document();
+        PdfWriter writer;
         {
             try {
                 writer = PdfWriter.getInstance(doc, new FileOutputStream("C:\\PDF_Java\\" + fileName +".pdf"));
@@ -30,15 +48,9 @@ public class GeneratePDF {
 
                 doc.open();
                 doc.add(new Paragraph(fileName));
-                doc.close();
-                writer.close();
-                PdfReader reader =new PdfReader("C:\\PDF_Java\\" + fileName +".pdf");
-                if (Desktop.isDesktopSupported()) {
-                    File myFile = new File("/PDF_Java/" + fileName +".pdf");
-                    Desktop.getDesktop().open(myFile);
-
-                }
-
+               doc.close();
+               writer.close();
+               PdfReader reader =new PdfReader("C:\\PDF_Java\\" + fileName +".pdf");
             } catch (DocumentException e) {
                 e.printStackTrace();
             } catch (FileNotFoundException e) {
@@ -49,4 +61,5 @@ public class GeneratePDF {
         }
 
     }
+
 }
