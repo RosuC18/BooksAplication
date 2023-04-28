@@ -174,15 +174,6 @@ public boolean checkPwd(HttpServletRequest req,HttpServletResponse resp){
     {
            chkPwd=true;
 
-//        else
-//        {
-//            System.out.println("\nThe Strength of Password is Medium.");
-//        }
-//        System.out.println("\n----The Password Contains----");
-//        System.out.println("UpperCase Character: " +upChars);
-//        System.out.println("LowerCase Character: " +lowChars);
-//        System.out.println("Digit: " +digits);
-//        System.out.println("Special Character: " +special);
     }
     else
     {

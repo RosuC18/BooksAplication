@@ -4,6 +4,8 @@ package usermanagement.db;
 
 import usermanagement.BookList;
 import usermanagement.GeneratePDF;
+
+import java.io.File;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,11 +15,7 @@ public class DBBookList {
 
     //=================================New Book=========================================
     public boolean newBook(BookList u) {
-
-        System.out.println(u);
-        int update=-1;
         boolean isInserted=false;
-        PreparedStatement pst=null;
         try {
 
             PreparedStatement pSt = LoadConn().prepareStatement("INSERT INTO books (author,title,id_user) VALUES(?,?,?)");
@@ -27,8 +25,24 @@ public class DBBookList {
 
            pSt.setLong(3, u.getId_user());
            pSt.executeUpdate();
-            GeneratePDF gPdf = new GeneratePDF();
-            gPdf.createPDF(u.getAuthorname());
+            String directory = "C:\\PDF_Java";
+            File fileObject = new File(directory);
+            String[] filesFolders = fileObject.list();
+            String authorname=u.getAuthorname();
+            boolean fileFind=false;
+            for(String ff: filesFolders)
+                if(ff.equalsIgnoreCase(authorname+".pdf")){
+                   fileFind=true;
+                   break;
+            }
+            else {
+                    fileFind=false;
+                }
+            if(!fileFind)
+            {
+                GeneratePDF gPdf = new GeneratePDF();
+            gPdf.createPDF(u.getAuthorname());}
+
             pSt.close();
         } catch (SQLException e) {
             e.printStackTrace();

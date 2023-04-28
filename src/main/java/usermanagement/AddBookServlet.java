@@ -1,5 +1,6 @@
 package usermanagement;
 
+
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,32 +21,18 @@ public class AddBookServlet extends HttpServlet {
         Object o = s.getAttribute("id");
         String authorname = req.getParameter("author");
         String titlename = req.getParameter("title");
-        if(o!=null && (authorname!=null||titlename!=null))
-        {
-            long id_user = (int)o;
-            BookList mbl = new BookList(authorname,titlename, id_user);
-            DBBookList db=new DBBookList();
+        if(o!=null && !authorname.equalsIgnoreCase("") &&  !titlename.equalsIgnoreCase("")) {
+            long id_user = (int) o;
+            BookList mbl = new BookList(authorname, titlename, id_user);
+            DBBookList db = new DBBookList();
             db.newBook(mbl);
         }
         else
         {
-            error(resp, "Operation forbidden. User is not logged in or authorname or title are not inserted");
+            error(resp, "author or title are not inserted");
+
         }
     }
-
-    private void returnJsonResponse(HttpServletResponse response, String jsonResponse) {
-        response.setContentType("application/json");
-        PrintWriter pr = null;
-        try {
-            pr = response.getWriter();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        assert pr != null;
-        pr.write(jsonResponse);
-        pr.close();
-    }
-
     private void error( HttpServletResponse resp, String mesaj) {
 
         try {
@@ -56,4 +43,19 @@ public class AddBookServlet extends HttpServlet {
             e.printStackTrace();
         }
     }
+
+//    private void returnJsonResponse(HttpServletResponse response, String jsonResponse) {
+//        response.setContentType("application/json");
+//        PrintWriter pr = null;
+//        try {
+//            pr = response.getWriter();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        assert pr != null;
+//        pr.write(jsonResponse);
+//        pr.close();
+//    }
+
+
 }
