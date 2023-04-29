@@ -21,15 +21,19 @@ public class AddBookServlet extends HttpServlet {
         Object o = s.getAttribute("id");
         String authorname = req.getParameter("author");
         String titlename = req.getParameter("title");
+
         if(o!=null && !authorname.equalsIgnoreCase("") &&  !titlename.equalsIgnoreCase("")) {
+
             long id_user = (int) o;
             BookList mbl = new BookList(authorname, titlename, id_user);
             DBBookList db = new DBBookList();
+            boolean chk= db.chkAuthor(mbl);
+            if(chk){
             db.newBook(mbl);
-        }
+        }}
         else
         {
-            error(resp, "author or title are not inserted");
+            error(resp, "author or title was not inserted");
 
         }
     }
@@ -44,18 +48,18 @@ public class AddBookServlet extends HttpServlet {
         }
     }
 
-//    private void returnJsonResponse(HttpServletResponse response, String jsonResponse) {
-//        response.setContentType("application/json");
-//        PrintWriter pr = null;
-//        try {
-//            pr = response.getWriter();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        assert pr != null;
-//        pr.write(jsonResponse);
-//        pr.close();
-//    }
+    private void returnJsonResponse(HttpServletResponse response, String jsonResponse) {
+        response.setContentType("application/json");
+        PrintWriter pr = null;
+        try {
+            pr = response.getWriter();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        assert pr != null;
+        pr.write(jsonResponse);
+        pr.close();
+    }
 
 
 }

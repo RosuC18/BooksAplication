@@ -11,15 +11,10 @@ import usermanagement.db.DBUser;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+
 
 @WebServlet("/userManagement")
 public class UserManagementServlet extends HttpServlet {
-
-
-
 
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) {
@@ -28,7 +23,7 @@ public class UserManagementServlet extends HttpServlet {
         boolean newUser = false;
         if (action != null && action.equalsIgnoreCase("NEW")) {
 
-            newUser= newUser(req, resp);
+           newUser= newUser(req, resp);
             if(newUser)
             {
                 RequestDispatcher rd=req.getRequestDispatcher("login.html");
@@ -78,9 +73,6 @@ public class UserManagementServlet extends HttpServlet {
         String confirmPwd = req.getParameter("confirmPwd");
         String accepthtml = req.getParameter("accept");
 
-
-        System.out.println(pwd+confirmPwd);
-        // validari
         if(!pwd.equals(confirmPwd))
         {
            error(resp, "Password is not the same as confirmed password");
@@ -109,7 +101,7 @@ public class UserManagementServlet extends HttpServlet {
         }
 
         boolean accept=false;
-         if (accepthtml != null && accepthtml.equalsIgnoreCase("YES"))
+         if ( accepthtml.equalsIgnoreCase("YES"))
              accept=true;
         User u = new User(email,pwd,confirmPwd, accept);
          inserted = dbUser.newUser(u);

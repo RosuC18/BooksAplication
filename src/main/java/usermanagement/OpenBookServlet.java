@@ -34,18 +34,18 @@ public class OpenBookServlet extends HttpServlet {
         }
 
     }
-//    private void returnJsonResponse(HttpServletResponse response, String jsonResponse) {
-//        response.setContentType("application/json");
-//        PrintWriter pr = null;
-//        try {
-//            pr = response.getWriter();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        assert pr != null;
-//        pr.write(jsonResponse);
-//        pr.close();
-//    }
+    private void returnJsonResponse(HttpServletResponse response, String jsonResponse) {
+        response.setContentType("application/json");
+        PrintWriter pr = null;
+        try {
+            pr = response.getWriter();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        assert pr != null;
+        pr.write(jsonResponse);
+        pr.close();
+    }
     private void error ( HttpServletResponse resp, String mesaj) {
 
         try {

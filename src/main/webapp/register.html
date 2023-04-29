@@ -10,7 +10,13 @@
     Email: <input type="text" name="email" id="email"/></br>
     Pwd: <input type="text" name="pwd" id="pwd"/></br>
     Confirm Pwd: <input type="text" name="confirmPwd" id="confirmPwd"/></br>
-    Confirm Terms&Conditions: <input type="text" name="accept" id="accept"/></br>
+      <label for="accept">Confirm Terms&Conditions:</label>
+      <select name="accept" id="accept">
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+    </select></br>
+
+
    <!-- I want offers: <input type="text" name="offer" id="offer"/></br>-->
     <input type="hidden" id="action" name="action" value="NEW">
     <input type="submit" />

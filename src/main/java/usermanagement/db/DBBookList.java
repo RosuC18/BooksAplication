@@ -1,10 +1,6 @@
 package usermanagement.db;
-
-
-
 import usermanagement.BookList;
 import usermanagement.GeneratePDF;
-
 import java.io.File;
 import java.sql.*;
 import java.util.ArrayList;
@@ -25,6 +21,7 @@ public class DBBookList {
 
            pSt.setLong(3, u.getId_user());
            pSt.executeUpdate();
+
             String directory = "C:\\PDF_Java";
             File fileObject = new File(directory);
             String[] filesFolders = fileObject.list();
@@ -94,20 +91,23 @@ public class DBBookList {
 
 //==============================Open book by author===============================
     public void open(BookList opnB){
-        System.out.println("met open");
         try {
-            PreparedStatement pSt = LoadConn().prepareStatement("select * from books where author=? or title=? and id_user=?");
-           pSt.setString(1, opnB.getAuthorname());
-           pSt.setString(2,opnB.getTitlename());
-            pSt.setLong(3, opnB.getId_user());
+            PreparedStatement pSt = LoadConn().prepareStatement("select author from books where  id_user=?");
+           pSt.setLong(1, opnB.getId_user());
            ResultSet rs =pSt.executeQuery();
-            System.out.println("opendb1");
+
             while(rs.next()) {
                 String authorname = rs.getString("author");
+               if(opnB.getAuthorname().equalsIgnoreCase(authorname.trim())){
+
                 GeneratePDF gPdf = new GeneratePDF();
                 gPdf.openPDF(authorname.trim());
+                   System.out.println("opendb2");
 
-                System.out.println("opendb2");
+                break;
+
+            }
+
             }
             pSt.close();
 
@@ -142,7 +142,6 @@ public void delete(BookList delB)  {
         boolean isDeleted=false;
         try {
             PreparedStatement pSt = LoadConn().prepareStatement("delete from books where id_user=? ");
-          //  pSt.setString(1, delB.getAuthorname());
            pSt.setLong(1, delB.getId_user());
             int val = pSt.executeUpdate();
             if(val!=-1)
@@ -153,4 +152,33 @@ public void delete(BookList delB)  {
             throw new RuntimeException(e);
         }
     }
+//=====================================Check Authorname================================
+public boolean chkAuthor(BookList author){
+    boolean chkauthor=false;
+    try {
+        PreparedStatement pSt = LoadConn().prepareStatement("select author from books where  id_user=?");
+        pSt.setLong(1, author.getId_user());
+        ResultSet rs =pSt.executeQuery();
+
+        while(rs.next()) {
+            String authorname = rs.getString("author");
+            if(author.getAuthorname().equalsIgnoreCase(authorname.trim())){
+
+                System.out.println("check method");
+                chkauthor=false;
+                break;
+
+            }
+            else{
+                chkauthor=true;
+            }
+        }
+        pSt.close();
+
+    } catch (SQLException  e) {
+        throw new RuntimeException(e);
+    }
+    return chkauthor;
+}
+
 }
