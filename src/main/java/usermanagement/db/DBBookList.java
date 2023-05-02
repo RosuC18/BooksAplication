@@ -173,6 +173,9 @@ public boolean chkAuthor(BookList author){
                 chkauthor=true;
             }
         }
+      if (rs.getRow()==0){
+          chkauthor=true;
+      }
         pSt.close();
 
     } catch (SQLException  e) {
